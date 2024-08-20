@@ -1,17 +1,22 @@
 import { Sequelize } from "sequelize";
+import dotenv from "dotenv";
 
-const sequelize = new Sequelize(
-  "postgresql://SendSmart_owner:4DtH5xUAcTlW@ep-soft-hat-a1vpjayz-pooler.ap-southeast-1.aws.neon.tech/SendSmart?sslmode=require",
-  {
-    dialect: "postgres",
-    dialectOptions: {
-      ssl: {
-        require: true,
-        rejectUnauthorized: false, // This bypasses SSL certificate validation, use with caution
-      },
+dotenv.config();
+
+const connString = process.env.DATABASE_URL;
+if (!connString) {
+  throw new Error("DATABASE_URL is not defined in the environment variables.");
+}
+
+const sequelize = new Sequelize(connString, {
+  dialect: "postgres",
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false,
     },
-  }
-);
+  },
+});
 
 sequelize
   .authenticate()
